@@ -80,66 +80,66 @@ Snapp также значительно более эффективен, чем 
 **Пример пользовательского потока:**
 
 - Пользователь посещает сайт кредитора
-- Is asked to download cryptographically signed information from a credit score provider such as CreditKarma
-- Website locally checks if credit score is above threshold and computes SNARK proof returning the result
-- SNARK proof and result are attached to the Mina address of the user and is shared with the cloud system of the lender (could also be a smart contract)
-- Lender verifies the SNARK proof and passing of threshold
-- Loan is provided to the Mina address in stablecoins, if it meets criteria
+- Его просят загрузить криптографически подписанную информацию от поставщика кредитных рейтингов, такого как CreditKarma
+- Веб-сайт локально проверяет, превышает ли кредитный рейтинг пороговое значение, и вычисляет SNARK доказательство, возвращая результат
+- SNARK доказательство и результат прикрепляются к Mina адресу пользователя и передаются в облачную систему кредитора (также может быть смарт-контракт)
+- Кредитор верифицирует SNARK доказательство и превышение порога
+- Кредит поступает на адрес Mina в стейблкоинах, если он соответствует критериям
 
-**How Snapp Toolset Is Used: **Developer of Snapp uses the toolset to integrate a specific program that has the user download a signed credit score from provider, check locally on the user’s computer that the score meets criteria, and locally generate a proof for the check, which is subsequently shared back with the developer. The toolset also provides the user with a Mina address behind the scenes, which is used to provide a time stamp to the computation via the block number on the Mina blockchain. They also use the toolset to integrate a SNARK verifier into their own backend to confirm the validity of the local computation.
+**Как используется Snapp инструментарий: **Разработчик Snapp использует данный инструментарий для интеграции конкретной программы, которая просит пользователя загрузить подписанный кредитный рейтинг от поставщика, локально проверяет на компьютере пользователя соответствие рейтинга критериям, и локально генерирует доказательство для проверки, которое впоследствии возвращается разработчику. Набор инструментов также предоставляет пользователю не афишированный адрес Mina, который используется для предоставления метки времени для вычислений с помощью блока в блокчейне Mina. Инструментарий также используется для интеграции SNARK верификатора в свой собственный бэкенд, чтобы подтвердить валидность локальных вычислений.
 
-### Example 2: Proof of Authentic Identity Document
+### Пример 2: Подтверждение подлинности документа удостоверения личности (ID)
 
-**Value Proposition: **Proving that the owner of a Mina address has access to an authentic identity document (such as driver’s license), without disclosing the document itself, starting with a certain block height. The validity of the identity document would be checked by a standardized open source algorithm.
+**Ценностное предложение: **Доказательство того, что владелец адреса Mina имеет доступ к подлинному ID (например, водительские права), без рассекречивания самого документа, начиная с определенной высоты блока. Валидность удостоверения личности будет проверяться стандартным алгоритмом с открытым исходным кодом.
 
-**Example User Flow:**
+**Пример пользовательского потока:**
 
-- User visits website, downloads app to laptop or mobile phone
-- Uses app to scan ID, verify its authenticity
-- App also creates Mina wallet for user
-- App associates SNARK proof with Mina address of user, along with hash of the photo of the ID
-- User visits another website that asks for authentic identity. Is able to share the ID proof, along with a hash of their ID, to confirm their Mina address has claim over an authentic ID
+- Пользователь посещает сайт, загружает приложение на ноутбук или мобильный телефон
+- Пользователь использует приложение для сканирования ID и проверки его подлинности
+- Приложение создает для пользователя кошелек в сети Mina
+- Приложение связывает SNARK доказательство с Mina адресом пользователя вместе с хешем фотографии его ID
+- Пользователь посещает другой сайт, который запрашивает аутентификацию. Пользователь может поделиться доказательством подлинности его ID вместе с хешем своего ID, чтобы подтвердить, что его адрес Mina претендует на подлинный ID
 
-**How Snapp Toolset Is Used: **Snapp toolset provides the developer with an SDK to embed into their app the SNARK proof generator and hash generator, along with a Mina interface. Snapp toolset also provides any other developer that wants to be able to verify said ID authentications with a SNARK verifier.
+**Как используется Snapp инструментарий: **Snapp инструментарий предоставляет разработчику SDK для встраивания в свое приложение генератора SNARK доказательств, генератора хэшей, а также интерфейса Mina. Snapp инструментарий также предоставляет любому другому разработчику возможность проверить аутентификацию указанного ID с помощью SNARK верификатора.
 
-### Example 3: Proof of Coinbase Balance
+### Пример 3: Подтверждение монетного баланса
 
-**Value Proposition: **Providing third parties with proof of funds meeting a certain criteria (e.g. >\$10,000) in a Coinbase account belonging to a specific email, without disclosing the actual deposit amount.
+**Ценностное предложение: **Предоставляет третьим лицам доказательство наличия средств, соответствующих определенным критериям (например, >\$10,000) в учетной записи Coinbase, принадлежащей определенному адресу электронной почты, без раскрытия фактической суммы депозита.
 
-**Example User Flow:**
+**Пример пользовательского потока:**
 
-- User visits a lending application. In order to borrow funds, they’re asked to have at least >\$10,000 of Bitcoin in their Coinbase account.
-- User OAuths into their Coinbase account
-- The website locally checks user’s balance and email, both signed by Coinbase’s keys
-- Website locally generates SNARK proof that user’s balance is >\$10,000
-- SNARK proof is attached to the Mina address of the user
-- User signs their ownership of the SNARK proof using their Mina address, and shares the email address of their Coinbase account with the backend of the lending application.
+- Пользователь посещает приложение для кредитования. Чтобы занять средства, их просят иметь не менее >\$10,000 в биткойнах  на своем Coinbase счете
+- Пользователь авторизируется в свою учетную запись Coinbase с помощью протокола OAuths
+- Веб-сайт локально проверяет баланс и электронную почту пользователя, подписанные ключами Coinbase
+- Веб-сайт локально генерирует SNARK доказательства, что баланс пользователя >\$10,000
+- SNARK доказательство прилагается к адресу пользователя в сети Mina
+- Пользователь подписывает право собственности на SNARK доказательство, используя свой Mina адрес, и передает адрес электронной почты своего Coinbase аккаунта бэкенду приложения кредитования
 
-**How Snapp Toolset Is Used: **Developer of Snapp uses the toolset to integrate a specific program that has the user OAuth into their Coinbase account, query their account balance for a signed balance information, the account’s email address, and a time stamp. The toolset allows a SNARK proof to be generated locally, without sharing any information with the backend of the service provider, so all balance info stays private. The developer also uses the toolset to integrate a SNARK verifier into their own backend to confirm the validity of the local computation.
+**Как используется Snapp инструментарий: **Разработчик Snapp использует набор инструментов для интеграции определенной программы, с помощью которой пользователь авторизируется в свою учетную запись Coinbase через протокол OAuth, запрашивает баланс учетной записи для получения подписанной информации о балансе, адреса электронной почты от учетной записи и отметки времени. Инструментарий позволяет локально генерировать SNARK доказательство, без обменивания какой-либо информацией с бэкэндом поставщика услуг, поэтому вся информация о балансе остается конфиденциальной. Разработчик также использует набор инструментов для интеграции SNARK верификатора в свой собственный бэкенд, для подтверждения валидности локальных вычислений.
 
-### Example 4: Private Voting
+### Пример 4: Частное голосование
 
-**Value Proposition:** Allowing a set of eligible voters (e.g. any Twitter account with >100 followers) to vote privately, without disclosing who they are and what they voted for. Anyone would easily be able to verify the outcome of the entire vote once the voting period is over.
+**Ценностное предложение: **Разрешить группе правомочных избирателей (например, любой учетной записи Twitter с более чем 100 подписчиками) голосовать приватно не раскрывая кто они и за что голосовали. Любой желающий сможет легко проверить результат всего голосования по окончанию периода голосования.
 
-**Example User Flow:**
+**Пример пользовательского потока:**
 
-- User can prove ownership of a given account by exhibiting the HTTPS transcript of them successfully logging into twitter.com. To authenticate and vote, they will prove (public input in orange), “I know an account A with password P and a valid login transcript for (A, P) and hash(A, P) = **N** and my vote is for option **V**”. **N** is called a “nullifier” and is unique to a given user/password combination and is used to prevent double voting.
-- In a fully decentralized mode, the user can then use this proof to update the state of the election app on the Mina chain.
-- In a higher throughput, partially decentralized mode, the user would send their zero knowledge proof to a proof-aggregator, who maintains the state of the election, and aggregates the user proofs together into one bundled together proof, which then gets posted to the Mina chain.
-- When viewing the results of the election, the user obtains the main Mina blockchain proof, which certifies the validity of the entire Mina merkle tree, including the leaf corresponding to the election state. They also obtain a merkle path into this leaf so that they can view the state.
+- Пользователь может подтвердить право собственности на данную учетную запись, предъявив протокол HTTPS об успешном входе в twitter.com. Чтобы пройти аутентификацию и проголосовать, они должны доказать (публичный вклад выделен оранжевым цветом): “Мне известны данные аккаунта A с паролем P,  и валидная транскрипция входа для (A, P),  и хеш (A, P) = **N**,  и я голосую за вариант **V**”.  **N** обозначает “обнулитель”, и он уникален для данного пользователя/пароля и используется для предотвращения двойного голосования.
+- В полностью децентрализованном режиме пользователь может использовать это доказательство для обновления состояния приложения для голосования в цепочке Mina.
+- В частично децентрализованном режиме с более высокой пропускной способностью пользователь отправит свое доказательство с нулевым разглашением агрегатору доказательств, который поддерживает состояние выборов и объединяет пользовательские доказательства в одно обобщенное доказательство, которое затем отправляется в цепочку Mina.
+- При просмотре результатов выборов пользователь получает основное доказательство блокчейна Mina, которое удостоверяет валидность всего дерева Меркла Mina, включая лист, отвечающий за состояние выборов. В лист также включается путь Меркла, чтобы можно было проверить состояние.
 
-### Other Ideas
+### Другие идеи 
 
-The design space for Snapps is huge, and will consist of many other innovative ideas entrepreneurs will come up with as the framework is better understood. Some other examples we have thought of:
+Проектное пространство для Snapps огромно и будет пополняться многочисленными инновационными идеями, которые будут возникать у предпринимателей по мере лучшего понимания структуры. Вот еще несколько примеров, над которыми мы раздумывали:
 
-- Proof of age using identity document
-- Proof of citizenship using identity document
-- Proof of salary via bank account
-- Proof of not doing an activity, e.g. blockchain address associated with a specific identity has not sent money to blacklisted wallet addresses, without disclosing address
-- Proof of limited alterations to a document, e.g. resizing a validated photo
+- Подтверждение возраста с использованием документа, удостоверяющего личность
+- Подтверждение гражданства с использованием документа, удостоверяющего личность
+- Подтверждение зарплаты через банковский счет
+- Доказательство отсутствия активности. К примеру доказательство того, что адрес блокчейна, связанный с конкретным идентификатором, не отправлял деньги на адреса кошелька, внесенные в черный список, без раскрытия адреса
+- Доказательство ограниченных изменений документа, например изменение размера подтвержденной фотографии
 
-## Next Steps and Community Involvement
+## Следующие шаги и вовлечение сообщества
 
-O(1) Labs is working hard to build the Snapp toolset which will make the above examples possible on the Mina blockchain, and partner with talented developers to build the first proof of concept implementations.
+O (1) Labs усердно работает над созданием Snapp инструментария, который сделает приведенные выше примеры возможными в блокчейне Mina, и сотрудничает с талантливыми разработчиками для создания первого доказательства реализации концепции.
 
-However, the sky's the limit for Snapps. As such, we would like to invite the Mina community to join us in ideating different Snapp use cases and user flows, as well as helping us develop the tools and apps by contributing to the code. If you would like to join the exploration of this entirely new design space for confidential and verifiable applications, start by filling out this [form](https://forms.gle/PsM1AmZMveE3RhaV8).
+Однако для Snapps нет предела. Таким образом, мы хотели бы пригласить сообщество Mina присоединиться к нам в формировании различных вариантов использования Snapp и пользовательских потоков, а также помочь нам в разработке инструментов и приложений, внося свой вклад в код. Если вы хотите присоединиться к исследованию этого совершенно нового проектного пространства для создания конфиденциальных и верифицируемых приложений, начните с заполнения этой [формы](https://forms.gle/PsM1AmZMveE3RhaV8).
