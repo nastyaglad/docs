@@ -1,85 +1,85 @@
 import Page from "@reason/pages/Docs";
 export default Page({ title: "Snapps: SNARK Powered Applications" });
 
-# Snapps: SNARK Powered Applications
+# Snapps: Приложения на базе SNARK
 
 <Alert kind="warning">
 
-  As of release `0.0.16-beta7` this feature has been disabled and can only be used by enabling a build-time flag. We plan to enable this feature in future releases.
+  Начиная с версии `0.0.16-beta7` эта функция была отключена и может быть активирована только путем включения флага времени сборки. Мы планируем включить эту функцию в будущих релизах.
 
 </Alert>
 
-### Snapps = Dapps + Privacy + Off-Chain Data + Scalability
+### Snapps = децентрализованные приложения (Dapps) + приватность + офчейн данные + масштабируемость
 
-As the world’s lightest blockchain, Mina enables an entirely new category of applications called Snapps <Footnote refNumber="[3]" link="/disclaimers" /> : Snarkified Applications. Snapps are featurewise similar to Dapps on Ethereum, but are superior thanks to three specific properties:
+Будучи самым легким блокчейном в мире, Mina предлагает совершенно новую категорию приложений под названием Snapps <Footnote refNumber="[3]" link="/disclaimers" /> : Snarkified Applications. Snapps функционально похожи на децентрализованные приложения (Dapps) на платформе Ethereum, но превосходят их благодаря трем особым свойствам:
 
-1. Verify the integrity of a piece of data without disclosing what it is.
-2. Verify correct execution of expensive computations.
-3. Significant scalability benefits.
+1. Проверка целостности частей данных, не раскрывая их.
+2. Проверка правильности выполнения дорогостоящих вычислений.
+3. Значительные преимущества масштабируемости.
 
-These types of applications aren’t necessarily new - in a way both exist as present day blockchains: ZCash as a Snapp with property 1, and Mina as a Snapp with property 2.
+Эти типы приложений не обязательно новые. В некотором смысле оба приложения существуют как современные блокчейны: ZCash как Snapp со свойством 1 и Mina как Snapp со свойством 2.
 
-A Snapp is also significantly more efficient than a Dapp on Ethereum. In order for the Ethereum world computer to make a commitment to its users about the execution of a Dapp, every node and miner on the network has to run the same computation. This is wildly inefficient. With a Snapp on Mina, the Snapp gets executed once by its developer, after which all other nodes can just verify the associated SNARK proof. One can make the same argument for SNARK powered Layer 2 Dapps on Ethereum, however those Dapps are still encumbered by the limited throughput of the main chain, whereas a Snapp on Mina benefits from the scalability potential of the Mina blockchain thanks to its succinct nature.
+Snapp также значительно более эффективен, чем Dapp в Ethereum. Чтобы мировой компьютер Ethereum взял на себя обязательство перед своими пользователями по задействованию Dapp, каждая нода и майнер в сети должны выполнять одни и те же вычисления. Это неприлично неэффективно. С помощью Snapp на базе Mina, Snapp запускается разработчиком, после чего все остальные ноды могут просто верифицировать соответствующее SNARK доказательство. Подобное утверждение может быть применено к Dapps второго уровня на базе SNARK в Ethereum, однако эти Dapps по-прежнему обременены ограниченной пропускной способностью основной цепочки, тогда как Snapp на базе Mina извлекает выгоду из потенциала масштабируемости блокчейна Mina благодаря его сжатой структуре.
 
-In general, a Snapp on Mina has the following workflow:
+В общем плане, Snapp в сети Mina работает следующим образом:
 
-1. Identify the code to run, open source it if it isn’t already
-2. Use the code to deploy a SNARK circuit via a function call on Mina
-3. Source the data to perform the computation on
-4. Call the function with the relevant data
-5. Computation runs on chain, similar to a smart contract [ready 6-12 months after mainnet]
-6. Attach the SNARK proof returned from the function to a Mina address
-7. Mina executes transactions based on result of the SNARK proof
+1. Определяет код для запуска, раскрывает его исходный код, если он еще не был открыт
+2. Использует код для развертывания схемы SNARK путем вызова функции в сети Mina
+3. Получает данные для выполнения вычислений 
+4. Вызывает функции с соответствующими данными
+5. Выполняет вычисления в цепочке, аналогично смарт-контракту [готово через 6-12 месяцев после mainnet]
+6. Присоединяет SNARK доказательство, возвращенное из функции, к адресу Mina
+7. Mina проводит транзакции на основе результатов SNARK доказательств
 
-## Technical overview
+## Технический обзор 
 
-As currently designed, Mina’s Snapps functionality will work as follows.
+В нынешнем виде, Mina's Snapps будет работать следующим образом.
 
-- There will be a new kind of account, called a “Snapp account”, which in addition to a public-key and balance will also contain a Pickles SNARK verification-key K and a state S, consisting of a small array of field elements.
-- There will be a new kind of transaction called a “Single Snapp transaction”. This will enable transferring to and from a standard account, as well as updating a Snapp’s state. It will contain
+- Появится новый вид учетной записи, называемой “Snapp аккаунт”, в которой помимо открытого ключа и баланса также будет храниться ключ проверки Pickles SNARK K и состояние S, состоящее из небольшого массива элементов поля. 
+- Появится новый вид транзакции, называемый “Single Snapp-транзакция”, что позволит выполнять переход в стандартную учетную запись и обратно, а также обновлять состояние Snapp. Оно будет содержать:
 
-  - A standard account address
-  - A Snapp account address
-  - A signed amount “snapp_account_delta” which represents the change in balance for the Snapp account.
-  - An optional proposed new state “snapp_new_state” for the Snapp account
-  - If snapp_acount_delta > 0, a signature on the transaction from the standard account
-  - A Pickles SNARK proof which should verify (with the Snapp account’s verification key) against a statement including
+  - Стандартный адрес учетной записи
+  - Адрес Snapp аккаунта
+  - Подписанную сумму “snapp_account_delta”, которая отображает изменение баланса для Snapp аккаунта
+  - Опциональное новое состояние “snapp_new_state” для Snapp аккаунта
+  - Подпись транзакции из стандартной учетной записи, если snapp_acount_delta > 0
+  - Доказательство Pickles SNARK, которое будет проверяться (с помощью ключа подтверждения Snapp аккаунта) на соответствие с утверждением, включающим
     - snapp_account_delta : SignedAmount
     - snapp_prev_state : Array&lt;Field>
     - snapp_new_state : Array&lt;Field>
 
-  The result of applying this transaction will be to update the Snapp’s state as indicated, modify the Snapp’s balance by snapp_acount_delta and modify the standard account’s balance by -snapp_account_delta.
+  В результате проведения этой транзакции будет обновлено состояния Snapp, изменено Snapp баланс с помощью snapp_acount_delta и баланс стандартной учетной записи с помощью -snapp_account_delta.
 
-- There will be a new kind of transaction called a “Double Snapp transaction”. This will enable simultaneously updating the states (and transferring funds between) two Snapp accounts.
-- It will contain
+- Появится новый вид транзакции, называемый “Double Snapp транзакция”, что позволит одновременно обновлять состояния (и переводить средства между) двумя Snapp аккаунтами.
+- Оно будет содержать:
 
-  - A Snapp account address “address1”
-  - A Snapp account address “address2”
-  - A signed amount “account1_delta” which represents the change in balance for the first account.
-  - Two optional proposed new states “account1_new_state” and “account2_new_state”
-  - If snapp_acount_delta > 0, a signature on the transaction from the standard account
-  - Two Pickles SNARK proofs proof1, proof2, which should for i = 1, 2 should verify (with account i’s verification key) against a statement including
+  - Адрес Snapp аккаунта “address1”
+  - Адрес Snapp аккаунта “address2”
+  - Подписанную сумму account1_delta, которая отображает изменение баланса для первого аккаунта
+  - Два опциональных новых состояния “account1_new_state” и “account2_new_state”
+  - Подпись транзакции из стандартного аккаунта, если snapp_acount_delta > 0
+  - Два доказательства SNARK Pickles proof1, proof2, которые для i = 1, 2 должны проверяться (с помощью i’s ключа проверки аккаунта) на соответствие с утверждением, включающим
     - account1_delta : SignedAmount
     - account1_prev_state : Array&lt;Field>
     - account1_new_state : Array&lt;Field>
     - account2_prev_state : Array&lt;Field>
     - account2_new_state : Array&lt;Field>
 
-  The result of applying this transaction will be to update both account’s states as indicated, modify the account1’s balance by account1_delta and modify account2’s balance by -account1_delta.
+  В результате проведения этой транзакции будет обновлено оба состояния аккаунтов, изменен account1’s баланс с помощью account1_delta и account2’s баланс с помощью -account1_delta.
 
-O(1) Labs is currently developing tooling for app developers, which includes existing ones like [snarky](https://github.com/o1-labs/snarky), to easily develop Snapps, and with the click of a button compute required SNARK proofs. The tooling will be compatible with Mina out of the box, providing Snapps with an easy way to gain state and financial value.
+В настоящее  время O(1) Labs разрабатывает для разработчиков приложений инструментарий, который содержит уже существующие инструменты, такие как [snarky](https://github.com/o1-labs/snarky), для облегченной разработки Snapps и выполнения вычислений SNARK доказательств с помощью одного нажатия кнопки. Инструментарий будет совместим с Mina по умолчанию, предоставляя Snapps простой способ определения состояния и получения и финансовой ценности.
 
-Let’s dive into a couple examples that will showcase the true power of Snapps.
+Рассмотрим пару примеров, которые продемонстрируют истинную мощь Snapps.
 
-## Examples
+## Примеры
 
-### Example 1: Proof of Credit Score
+### Пример 1: Подтверждение кредитного рейтинга
 
-**Value Proposition: **Providing borrowers with a way to prove their credit score is above a certain threshold, without disclosing the score itself, and thus be able to borrow funds without posting any collateral.
+**Ценностное предложение: **Предоставление заемщикам возможности доказать, что их кредитный рейтинг превышает определенный порог, без раскрытия самого рейтинга, и, таким образом, предоставление возможность занимать средства без предоставления каких-либо гарантий.
 
-**Example User Flow:**
+**Пример пользовательского потока:**
 
-- User visits website of lender
+- Пользователь посещает сайт кредитора
 - Is asked to download cryptographically signed information from a credit score provider such as CreditKarma
 - Website locally checks if credit score is above threshold and computes SNARK proof returning the result
 - SNARK proof and result are attached to the Mina address of the user and is shared with the cloud system of the lender (could also be a smart contract)
