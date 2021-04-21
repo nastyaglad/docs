@@ -1,45 +1,44 @@
 import Page from "@reason/pages/Docs";
 export default Page({ title: "Lifecycle of a Payment" });
 
-# The Lifecycle of a Payment
+# Жизненный цикл транзакций
 
-In Mina, payments pass through several steps before they are considered verified and complete. This document is meant to walk through what happens to a single payment in a simplified overview to help users understand a little about how Mina payments work. It it not a comprehensive technical overview, but instead a simplified walkthrough for users. For a more detailed technical overview aimed at developers wishing to understand the codebase check out the [technical lifecycle of a payment](/docs/architecture/lifecycle-payment-technical).
+Чтобы транзакции в сети Mina считались верифицированными и завершенными, они должны пройти несколько этапов.Этот документ был создан с целью дать упрощенный взгляд на обработку одного платежа, и помочь разобраться в том как Mina проводит платежи. Это не исчерпывающий технический обзор, а упрощенное руководство для пользователей. Чтобы получить более подробный технический обзор, ориентированный на разработчиков, желающих разобраться в кодовой базе, ознакомьтесь с [техническим жизненным циклом транзакций](/docs/architecture/lifecycle-payment-technical).
 
-!!! note
-Mina uses a gossip protocol to ensure that messages can be reliably transmitted to all other members of the network in a timely manner.
+!!! Примечание
+Чтобы гарантировать своевременную и надежную передачу сообщения стальным членам сети, Mina использует протокол сплетен. 
 
-## Payments
+## Платежи
 
-A payment is a type of transaction, requesting to transfer value from one account to another account, and the associated fee the sender is willing to pay for the payment to go through.
+Платеж - это вид транзакции, которая запрашивает перевод средств с одной учетной записи на другую, как и соответствующая комиссия, которую отправитель готов заплатить за проведение платежа.
 
-Let's walk through a scenario where a sender, Bob, wants to send a receiver, Alice, some mina.
+Давайте рассмотрим ситуацию, в которой отправитель по имени Боб хочет отправить получателю Алисе некоторую сумму.
 
-### Step 1: Payment Creation - Bob clicks ‘send’
+### Шаг 1. Создание платежа - Боб нажимает ‘отправить’
 
-Any member of the network can create a payment and share it with the Mina network. The payment is
-cryptographically signed with a private key so that the sender’s account can be verified. It is then sent out to peers on the network to be processed. The payment, when received by a peer, will exist in their local `transaction pool`, which is an in-memory store of all the transactions that peer has heard on the network.
+Любой участник сети может создать платеж и поделиться им с сетью Mina. Платеж криптографически подписывается закрытым ключом для верификации учетной записи отправителя. Затем он отправляется на на обработку другим пирам в сети. Платеж, полученный пиром, будет храниться в его локальном `пуле транзакций`, представляющий собой хранилище в памяти всех транзакций, о которых пир слышал в сети.
 
-### Step 2: Producing a Block - Bob’s payment gets put in a todo list
+### Шаг 2. Создание блока - платеж Боба вносится в список задач
 
-A block producer node is chosen on the network for a given time slot. The currently active producer choses in-flight payments based on payment fees and places them in a list to be processed called a transition block. Block producers earn mina for building these blocks. The producer generates a SNARK defining the structure of the transition block as compared to the previous block (but not yet verifying these new payments). The producer transmits this new information for snark workers to process.
+В сети отбирается блок-продюсер для данного временного интервала. Текущий активный продюсер выбирает промежуточные транзакции основываясь на комисси и помещает их в список для обработки, называемый переходным блоком. За построение этих блоков блок-продюсеры зарабатывают мину. Продюсер генерирует SNARK, определяющий структуру переходного блока в сравнении с предыдущим блоком (но еще не проверяя эти новые платежи). Продюсер передает эту новую информацию снарк-воркерам для обработки.
 
-### Step 3: Transaction Snark Proving - Bob’s payment gets snark-signed
+### Шаг 3. Снарк подтверждение транзакции - Боб подписывает снарк-платеж
 
-Snark worker nodes on the network begin performing snark calculations on each step of the new transition block. These are individual proofs of each payment and then merge proofs of neighboring payments. Eventually all the payments are verified. Snark workers can earn currency by generating these proofs, paid for by block producers from their block rewards. These proofs are transmitted out over the network.
+В сети снарк-воркеры приступают к снарк-вычислениям на каждой ступени нового переходного блока. Эти вычисления - индивидуальное доказательство каждого платежа, которые затем объединяются с доказательствами соседних платежей. В итоге все платежи проходят верификацию. Генерируя эти доказательства, снарк-воркеры могут зарабатывать валюту, которую блок-продюсер выплачивает из своих вознаграждений за блоки. Эти доказательства передаются по сети.
 
-### Step 4: Payment Verification - Alice and Bob’s accounts show the result of the transfer
+### Шаг 4. Подтверждение платежа - Результат транзакции отображается в аккаунтах Алисы и Боба
 
-Once the whole block has been proven, the block producer will send out a confirmation of the transition block. Then member nodes on the network apply the changes to their local account balances to reflect these changes.
+После получения доказательства всего блока, блок-продюсер отправит подтверждение блока перехода. Затем ноды в сети применяют изменения к балансам своих локальных счетов, чтобы отразить эти изменения.
 
-### Step 5: Payment Confidence Level - Alice is confident the transfer is complete
+### Шаг 5: Уровень достоверности платежа - Алиса уверена, что перевод завершен
 
-With each subsequent block, a recipient has a higher degree of confidence that the payment is actually complete and that the network has consensus about that block. However, like in most blockchains, payments are said to be confirmed after a certain number of blocks, also known as transaction finality. 
+С каждым последующим блоком получатель имеет все больше оснований быть уверенным в успешности транзакции, и в том, что у сети есть консенсус по поводу этого блока. Однако, как и в большинстве блокчейнов, платеж считается подтвержденными после создания определенного количества блоков, что также известно как финализация транзакции. 
 
-In the Bitcoin network, a transaction is confirmed after [6 blocks]( https://en.bitcoin.it/wiki/Confirmation) (60 mins) with an assumption that an attacker is unlikely to amass more than 10% of the hashrate.
+В сети Биткойн транзакция подтверждается после [6 блоков]( https://en.bitcoin.it/wiki/Confirmation) (60 минут) предполагая, что злоумышленник вряд ли накопит более 10% хешрейта.
 
-With slot duration of 3 mins and assuming 90% honest stake, the following table shows the finality in blocks, average time it takes to produce the corresponding number of blocks and the confidence that payment will be confirmed.
+Допустим что длительность слота 3 минуты и честность стека равна 90%. Следующая таблица демонстрирует финализацию в блоках, среднее время, необходимое для создания соответствующего количества блоков, и гарантию того, что платеж будет подтвержден.
 
-|Finality (in blocks) | Average time for finality | Finality confidence (%) |
+|Финализация (в блоках) | Среднее время финализации | Гарантия финализации (%) |
 |-------------------|---------------------|---------------------|
 | 8| 33 mins | 98.6709|
 |15| 60 mins|99.9231|
@@ -47,21 +46,21 @@ With slot duration of 3 mins and assuming 90% honest stake, the following table 
 | 30| 2hrs|99.9998|
 | 38| 2hrs 32mins |100|
 
-Average time is calculated based on consensus constants that determine the number of slots filled per epoch. This is currentlyset to 75%
+Расчет среднего времени основывается на консенсусных константах, которые определяют количество заполняемых слотов за эпоху. На данный момент это количество равно 75%.
 
-The recommended wait time for a transaction to be confirmed is 15 blocks which provides a 99.9% confidence that the transaction will not be reversed.
+Рекомендуемое время ожидания для подтверждения транзакции составляет 15 блоков, что дает 99,9% гарантию того, что транзакция не будет отклонена.
 
-## Failure Scenarios
+## Сценарии неудач
 
-### Transaction is not accepted by the network
+### Сеть отклонила транзакцию 
 
-There are a couple reasons why a transaction shared with peer nodes may not get accepted:
+Есть несколько причин, из-за которых транзакция, в которой участвуют другие пиры, может быть отклонена:
 
-- The transaction is not fundamentally valid. Meaning that the sender's account doesn't exist, it doesn't have sufficient funds, the signature doesn't match with the account, or the nonce in the transaction was not incremented.
-- There could be adversarial nodes in the network that collude to deny service to specific senders in the network. However, this behavior is highly disincentivized and one honest node is enough to prevent this issue.
+- Транзакция принципиально недействительна. Это означает, что учетная запись отправителя не существует, в ней недостаточно средств, подпись не совпадает с учетной записью или временный номер в транзакции не был увеличен.
+- В сети могут находиться враждебные ноды. Они действуют сообща, чтобы помешать определенному отправителю воспользоваться сервисом. Однако такое поведение активно подавляется. Для решения такой проблемы достаточно одной честной ноды.
 
-### Transaction is not included in a block
+### Транзакция не включена в блок
 
-If a transaction is valid and the network is honest, then in all likelihood, a transaction will make it into a block. However, there is one case where a transaction may be dumped from a transaction pool:
+Если транзакция валидна, а сеть честна, тогда транзакция имеет все основания попасть в блок. Однако есть одно условие, при котором транзакция может быть исключена из пула транзакций:
 
-- If the transaction pool hits its capacity, or `max_txpool_size`, then it will evict the transaction with the lowest fee in the pool, causing it dumped from memory. If this happens, the sender will need to re-send the transaction with a higher fee, according to market dynamics at the time.
+- Если пул транзакций достигает максимальной заполненности или `max_txpool_size`, он вытесняет из пула транзакцию с самой низкой комиссией, в следствии чего она выгружается из памяти. В таком случае, отправителю придется отправить транзакцию повторно, но уже с более высокой комиссией в соответствии с динамикой рынка в определенный период времени.
